@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  // MySQL 데이터베이스 엔진을 사용합니다.
+  provider = "mysql"
+   // 데이터베이스 연결 정보를 .env 파일의 DATABASE_URL 로부터 읽어옵니다.
+  url      = env("DATABASE_URL")
+}
+
+
+//회원가입 테이블 정의
+model Users {
+  userId Int @id @default(autoincrement()) @map("userId")
+  nickname String @unique @map("nickname")
+  password String @map("password")
+  createdAt DateTime @default(now()) @map("createdAt")
+  updatedAt DateTime @updatedAt @map("updatedAt")
+
+  
+  Posts Posts[]    // 사용자 와 게시글은 1:N 관계/
+  Comments Comments[] // 사용자는 여러개의 댓글을 사용할 수 있다
+  Likes   Likes []
+@@map("Users")
+}
+
+
+// 포스트 테이블 정의
+
+model Posts {
+  postId    Int      @id @default(autoincrement()) @map("postId")
+  UserId Int @map("userId") // 사용자는 여러개의 게시글을 가질수있기 떄문에 유니크를 제외
+  nickname   String   @map("nickname")
+  title     String   @map("title")
+  content   String   @map("content") @db.Text
+  createdAt DateTime @default(now()) @map("createdAt")
+  updatedAt DateTime @updatedAt @map("updatedAt")
+
+  User Users @relation(fields: [UserId], references: [userId],onDelete: Cascade)
+  comments  Comments[]
+  Likes   Likes []
+
+  @@map("Posts")
+}
+
+
+// 코멘트 테이블 정의
+
+model Comments {
+  commentId Int      @id @default(autoincrement()) @map("commentId")
+  UserId Int @map("userId") // 사용자는 여러개의 게시글을 가질수있기 떄문에 유니크를 제외 
+  PostId    Int      @map("postId")
+  nickname      String   @map("nickname")
+  comment   String   @map("comment") @db.Text
+  createdAt DateTime @default(now()) @map("createdAt") 
+  updatedAt DateTime @updatedAt @map("updatedAt")
+ 
+  User  Users @relation(fields: [UserId], references: [userId],onDelete: Cascade)   // 사용자와 게시글은  1:N 관계
+  posts  Posts    @relation( fields: [PostId], references: [postId]) // Posts 모델과의 관계
+  
+  @@map("Comments")
+}
+
+
+model Likes {
+likeId     Int @id @default(autoincrement()) @map("likeId")
+PostId     Int @map("postId")
+UserId     Int @map("userId")
+createdAt  DateTime @default(now()) @map("createdAt") 
+updatedAt  DateTime @updatedAt @map("updatedAt")
+
+ // Posts 테이블과 관계를 설정합니다.
+  Post Posts @relation(fields: [PostId], references: [postId], onDelete: Cascade)
+  // Users 테이블과 관계를 설정합니다.
+  User Users @relation(fields: [UserId], references: [userId], onDelete: Cascade)
+
+@@map("Likes")
+}
