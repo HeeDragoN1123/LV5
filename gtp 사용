@@ -22,3 +22,8 @@ model Users {
 @@map("Users")
 } 
 이렇게 구성할 생각이야 
+
+
+
+routes, controllers, repositories services
+를 계층으로 구현하려고 해
