@@ -27,3 +27,19 @@ model Users {
 
 routes, controllers, repositories services
 를 계층으로 구현하려고 해
+
+
+
+
+
+# 412 body 데이터가 정상적으로 전달되지 않는 경우
+{"errorMessage": "데이터 형식이 올바르지 않습니다."}
+# 412 Title의 형식이 비정상적인 경우
+{"errorMessage": "게시글 제목의 형식이 일치하지 않습니다."}
+# 412 Content의 형식이 비정상적인 경우
+{"errorMessage": "게시글 내용의 형식이 일치하지 않습니다."}
+# 400 예외 케이스에서 처리하지 못한 에러
+{"errorMessage": "게시글 작성에 실패하였습니다."}
+
+
+ 솔트(Salt)를 사용하여 비밀번호를 해시화
